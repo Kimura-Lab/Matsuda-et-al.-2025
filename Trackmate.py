@@ -1,3 +1,19 @@
+# -------------------------------------------
+# This script is written specifically for **Jython (Python 2.x)** in the Fiji/ImageJ environment.
+#
+# Notes:
+# - Tested with Fiji + TrackMate + Jython.
+# - Requires: Fiji, TrackMate plugin, Java.
+# - Input/output paths need to be updated before use.
+#
+# ⚠️ Do NOT run this script with standard Python 3.x — it will not work.
+# ⚠️ This script relies on Jython, which only supports Python 2.x syntax.
+#
+# Please review and adjust settings before running.
+# -------------------------------------------
+
+
+
 import sys
 import os
 import csv
@@ -11,7 +27,7 @@ from fiji.plugin.trackmate.gui.displaysettings.DisplaySettings import TrackMateO
 from fiji.plugin.trackmate.features.track import TrackIndexAnalyzer
 import fiji.plugin.trackmate.visualization.hyperstack.HyperStackDisplayer as HyperStackDisplayer
 import fiji.plugin.trackmate.features.FeatureFilter as FeatureFilter
-from java.awt import Color  # マゼンタ指定に必要
+from java.awt import Color  # Needed to specify the color magenta
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -118,7 +134,7 @@ def export_spots_to_csv(model, output_csv_path):
             return "%.3f" % value
         return str(value)
 
-    # Spot ID → Track ID マッピング
+    # Spot ID → Track ID mapping
     spot_to_track = {}
     for track_id in tracks.trackIDs(False):
         for spot in tracks.trackSpots(track_id):
@@ -128,7 +144,7 @@ def export_spots_to_csv(model, output_csv_path):
         writer = csv.writer(f)
         writer.writerow(header)
 
-        for spot in all_spots.iterator(True):  # フレーム順
+        for spot in all_spots.iterator(True):  # frame sequence
             spot_id = spot.ID()
             track_id = spot_to_track.get(spot_id, -1)
 
@@ -173,7 +189,7 @@ def batch_process(input_folder, output_folder, detector='Log', spot_filters=[], 
 
             imp.show()
 
-            # --- ZスタックをT系列に変換（T>1の画像は変換しない） ---
+            # --- Convert Z-stack to time series (do not convert if T > 1) ---
             n_channels = imp.getNChannels()
             n_slices = imp.getNSlices()  # Z
             n_frames = imp.getNFrames()  # T
@@ -199,10 +215,10 @@ def batch_process(input_folder, output_folder, detector='Log', spot_filters=[], 
             # imp.close()
 
 
-########## 実行設定 ##########
+########## Run settings ##########
 
-input_path = '/Users/Kimura-Lab/Desktop/Trackmate/Images/'
-output_path = '/Users/Kimura-Lab/Desktop/Trackmate/csv/'
+input_path = '/path/to/input/folder/'
+output_path = '/path/to/output/folder/'
 
 filters = [
     {'feature': 'QUALITY', 'value': 1.0, 'is_above': True},
